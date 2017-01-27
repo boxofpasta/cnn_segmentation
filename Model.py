@@ -30,18 +30,18 @@ class Model:
         out2 = tf.nn.max_pool(conv2, ksize=[1, 2, 2, 1], strides=[1, 2, 2, 1], padding='SAME', name='pool_2')
 
         # third conv layer
-        W3 = init_rand_weight([5, 5, 128, 20])
-        b3 = init_rand_bias([20])
+        W3 = init_rand_weight([5, 5, 128, 256])
+        b3 = init_rand_bias([256])
         conv3 = tf.nn.relu(tf.nn.conv2d(out2, W3, strides=[1, 1, 1, 1], padding='SAME') + b3, name='features_3')
         out3 = tf.nn.max_pool(conv3, ksize=[1, 1, 1, 1], strides=[1, 1, 1, 1], padding='SAME', name='pool_3')
 
         # fourth conv layer
-        W4 = init_rand_weight([5, 5, 20, 3])
+        W4 = init_rand_weight([5, 5, 256, 22])
         conv4 = tf.nn.relu(tf.nn.conv2d(out3, W4, strides=[1, 1, 1, 1], padding='SAME'), name='features_4')
         out4 = tf.nn.max_pool(conv4, ksize=[1, 1, 1, 1], strides=[1, 1, 1, 1], padding='SAME', name='pool_4')
 
         # define loss
-        self.loss = tf.reduce_mean(tf.square(out4 - y))
+        self.loss = tf.reduce_mean(tf.nn.sparse_softmax_cross_entropy_with_logits(out4, y))
         self.train_step = tf.train.AdamOptimizer(0.0001).minimize(self.loss)
 
     def get_train_step(self):
