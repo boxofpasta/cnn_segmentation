@@ -2,10 +2,17 @@ import tensorflow as tf
 import numpy as np
 import BatchLoader
 import Model
-
+import utils
+from matplotlib import pyplot as plt
 
 if __name__ == '__main__':
 
+    loader = BatchLoader.BatchLoader()
+    f_name = loader.mask_path + "2011_003145.png"
+    im = plt.imread(f_name)
+    utils.visualize_label(im)
+
+    """
     with tf.Session() as sess:
 
         net = Model.Model()
@@ -26,3 +33,4 @@ if __name__ == '__main__':
 
         coord.request_stop()
         coord.join(threads)
+    """

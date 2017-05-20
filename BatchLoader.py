@@ -4,7 +4,10 @@ from matplotlib import pyplot as plt
 import os
 import numpy as np
 import functools
+import shutil
+import utils
 from skimage.io import imread, imsave
+
 
 
 def one_use(func):
@@ -21,29 +24,6 @@ def one_use(func):
     return decorated
 
 
-def generate_labels(f_names, out_path):
-    """ f_names should be a list of input image names:
-        for each png mask in PASCAL_VOC 2007 dataset, generate
-        a grayscale png where each pixel has label val from [0, 23) """
-    fill_val = 255
-    arr = np.full(3000, fill_val, dtype=np.uint16)
-    max_ind = np.int16(0)
-
-    for k in range(len(f_names)):
-        mask_test = 255.0 * plt.imread(f_names[k]) / 16.0
-        transformed = np.zeros([len(mask_test), len(mask_test[0])], dtype=np.uint16)
-        for i in range(len(mask_test)):
-            for j in range(len(mask_test[0])):
-                pixel = mask_test[i][j]
-                id = np.int16(pixel[0] * 100 + pixel[1] * 10 + pixel[2])
-                if arr[id] == fill_val:
-                    arr[id] = max_ind
-                    max_ind += 1
-                transformed[i][j] = arr[id]
-
-        imsave("../VOCdevkit/VOC2007/SegmentationClassAlt/" + f_names[-10, -4] + ".png", transformed)
-
-
 class BatchLoader:
 
     def __init__(self):
@@ -52,8 +32,9 @@ class BatchLoader:
         self.targ_im_w = 100
         self.targ_mask_h = 50
         self.targ_mask_w = 50
-        self.mask_path = "../VOCdevkit/VOC2007/SegmentationClassAlt/"
-        self.im_path = "../VOCdevkit/VOC2007/JPEGImages/"
+        self.generate_out_path = "../VOCdevkit/VOC2012/SegmentationClassAlt/"
+        self.mask_path = "../VOCdevkit/VOC2012/SegmentationClassAlt/"
+        self.im_path = "../VOCdevkit/VOC2012/JPEGImages/"
         self.im, self.mask = None, None
         self.init_queues
 
